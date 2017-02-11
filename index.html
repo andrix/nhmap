@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Neighborhood Map</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- build:css /css/site.css -->
+    <link href="bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
+    <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="src/css/styles.css" rel="stylesheet">
+    <!-- endbuild -->
+
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-6 col-md-2" id="left-menu">
+                <h3>Store Locations</h3>
+                <input type="text" id="locname" data-bind="textInput: locName" name="filter">
+                <hr>
+                <ul id="locations" data-bind="foreach: filtered">
+                    <li data-bind="click: $parent.showInfo">
+                        <span data-bind="text: place.name"></span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="col-xs-12 col-sm-6 col-md-10" id="right-container">
+                <div class="row">
+                    <div class="col-md-12"  id="map-header">
+                        <button id="btn-hamb" type="button" class="btn btn-default btn-lg">
+                            <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true">
+                            </span>
+                        </button>
+                    </div>
+                </div>
+                <div class="row" id="map-container">
+                    <div id="map">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- build:js /js/mapp.js -->
+    <script src="bower_components/knockout/dist/knockout.js"></script>
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQpZo5hL4RmQk8RYWihI3qYqTmWYksw-U&libraries=places"></script>
+    <script src="src/js/app.js" defer></script>
+    <!-- endbuild -->
+
+</body>
+</html>
