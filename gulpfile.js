@@ -71,13 +71,11 @@ gulp.task('html', function() {
         .pipe(gulp.dest(config.dest));
 });
 
-gulp.task('watch', function() {
-   // Watch .js files
-  gulp.watch(config.jsPath, ['scripts']);
-   // Watch .scss files
-  gulp.watch(config.cssPath, ['css']);
- });
-
+// Serve the project
+gulp.task('serve-prod', plugins.serve({
+  root: ['dist'],
+  port: 8050,
+}));
 
  // Default Task
 gulp.task('default', ['scripts', 'css', 'html', 'fonts']);
