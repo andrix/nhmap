@@ -36,14 +36,36 @@ Details
 Bulding the project
 -------------------
 
+* Install node.js and npm on your computer: https://docs.npmjs.com/getting-started/installing-node
+* Install gulp: 
+
+    $ npm install gulp
+
+* Install bower
+
+    $ npm install bower
+
+* Install gulp plugins (see above)
+
+    $ npm install gulp-* --save-dev # for each plugin 
+
+* Install bower components (see above)
+
+    $ bower install knockoutjs --save
+    $ bower install jquery --save
+    $ bower install bootstrap --save
+
+* After everything is installed, build the project running:
+
     $ gulp
 
 
 Run the project
 ---------------
 
+By default it connects to port: 8050. If you're already using that port, make sure to change it on
+gulpfile.js to another port.
+
     $ gulp serve-prod
-
-
 
 
