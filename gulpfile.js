@@ -2,31 +2,73 @@
 var gulp = require('gulp');
 
 var config = {
-    jsPath: "src/js/*.js",
-    cssPath: "src/css/*.css",
-    bowerDir: "/path2",
-    destDir: "build/",
+    jsPath: ["src/js/*.js"],
+    cssPath: ["src/css/*.css"],
+    htmlPath: "src/*.html",
+
+    dest: "dist/",
 };
 
- // Include plugins
-var concat = require('gulp-concat');
-var uglify = require('gulp-uglify');
-var rename = require('gulp-rename');
+// Include plugins
+var plugins = require("gulp-load-plugins")({
+    pattern: ['gulp-*', 'gulp.*', 'main-bower-files'],
+    replaceString: /\bgulp[\-.]/
+});
+var htmlreplace = require('gulp-html-replace');
 
 
- // Concatenate JS Files
+ // JS: Concatenate JS Files + minify + move
 gulp.task('scripts', function() {
-    return gulp.src(config.jsPath)
-      .pipe(concat('app.js'))
-      .pipe(rename({suffix: '.min'}))
-      .pipe(uglify())
-      .pipe(gulp.dest(config.destDir + "js"));
+    gulp.src(plugins.mainBowerFiles({debugging:true}).concat(config.jsPath))
+        .pipe(plugins.filter("**/*.js"))
+        .pipe(plugins.debug())
+        .pipe(plugins.concat('app.js'))
+        .pipe(plugins.rename({suffix: '.min'}))
+        .pipe(plugins.uglify())
+        .pipe(gulp.dest(config.dest + "js"));
+
 });
 
+// CSS: Concat + Minify + Move to dest
 gulp.task('css', function() {
-    return gulp.src(config.cssPath)
-        .pipe(rename({suffix: '.min'}))
-        .pipe(gulp.dest('build/css'));
+    gulp.src(plugins.mainBowerFiles({
+            debugging:true,
+            overrides: {
+                bootstrap: {
+                    main: "dist/css/bootstrap.css"
+                }
+            },
+            filter: "**/*.css",
+        }).concat(config.cssPath))
+        .pipe(plugins.debug())
+        .pipe(plugins.concat('styles.css'))
+        .pipe(plugins.rename({suffix: '.min'}))
+        .pipe(plugins.cleanCss())
+        .pipe(gulp.dest(config.dest + 'css'));
+});
+
+// Boostrap Fonts
+gulp.task('fonts', function() {
+    gulp.src(plugins.mainBowerFiles({
+            debugging:true,
+            overrides: {
+                bootstrap: {
+                    main: "dist/fonts/*.*"
+                }
+            },
+            filter: "**/*.{eot,svg,ttf,woff,woff2}",
+        }))
+        .pipe(plugins.debug())
+        .pipe(gulp.dest(config.dest + 'fonts'));
+});
+
+gulp.task('html', function() {
+    gulp.src(config.htmlPath)
+        .pipe(htmlreplace({
+            'css': 'css/styles.min.css',
+            'js': 'js/app.min.js'
+         }))
+        .pipe(gulp.dest(config.dest));
 });
 
 gulp.task('watch', function() {
@@ -38,4 +80,4 @@ gulp.task('watch', function() {
 
 
  // Default Task
-gulp.task('default', ['scripts', 'css']);
+gulp.task('default', ['scripts', 'css', 'html', 'fonts']);

@@ -4,12 +4,11 @@
     <title>Neighborhood Map</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- build:css /css/site.css -->
+    <!-- build:css -->
     <link href="bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
     <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="src/css/styles.css" rel="stylesheet">
     <!-- endbuild -->
-
 </head>
 <body>
     <div class="container-fluid">
@@ -42,10 +41,11 @@
         </div>
     </div>
 
-    <!-- build:js /js/mapp.js -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQpZo5hL4RmQk8RYWihI3qYqTmWYksw-U&libraries=places"></script>
+
+    <!-- build:js -->
     <script src="bower_components/knockout/dist/knockout.js"></script>
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQpZo5hL4RmQk8RYWihI3qYqTmWYksw-U&libraries=places"></script>
     <script src="src/js/app.js" defer></script>
     <!-- endbuild -->
 
