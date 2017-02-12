@@ -1,22 +1,41 @@
-var gulp = require('gulp')
+// Include gulp
+var gulp = require('gulp');
 
 var config = {
-    sassPath: '/path',
-    bowerDir: '/path2'
+    jsPath: "src/js/*.js",
+    cssPath: "src/css/*.css",
+    bowerDir: "/path2",
+    destDir: "build/",
 };
 
-gulp.task('hello', function() {
-    console.log('Hello World');
+ // Include plugins
+var concat = require('gulp-concat');
+var uglify = require('gulp-uglify');
+var rename = require('gulp-rename');
+
+
+ // Concatenate JS Files
+gulp.task('scripts', function() {
+    return gulp.src(config.jsPath)
+      .pipe(concat('app.js'))
+      .pipe(rename({suffix: '.min'}))
+      .pipe(uglify())
+      .pipe(gulp.dest(config.destDir + "js"));
 });
 
-gulp.task('robot', function(){
-    console.log('I AM A ROBOT');
+gulp.task('css', function() {
+    return gulp.src(config.cssPath)
+        .pipe(rename({suffix: '.min'}))
+        .pipe(gulp.dest('build/css'));
 });
 
-// Rerun the task when a file changes
+gulp.task('watch', function() {
+   // Watch .js files
+  gulp.watch(config.jsPath, ['scripts']);
+   // Watch .scss files
+  gulp.watch(config.cssPath, ['css']);
+ });
 
- // gulp.task('watch', function() {
- //    gulp.watch(config.sassPath + '/**/*.scss', ['css']); 
-//});
 
-  // gulp.task('default', ['bower', 'icons', 'css']);
+ // Default Task
+gulp.task('default', ['scripts', 'css']);

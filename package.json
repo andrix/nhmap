@@ -1,0 +1,23 @@
+{
+  "name": "nhmap",
+  "version": "0.1.0",
+  "description": "Neighborhood map for restaurants in manhattan",
+  "main": "gulpfile.js",
+  "dependencies": {
+    "gulp-concat": "^2.6.1",
+    "gulp-bower": "^0.0.13",
+    "gulp": "^3.9.1",
+    "gulp-google-cdn": "^2.1.0"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^2.0.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Andrés Moreira",
+  "license": "GPL-3.0"
+}
