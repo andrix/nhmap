@@ -155,6 +155,15 @@ ko.applyBindings(LocationViewModel);
 */
 function bindInfoWindow(marker, map, infowindow, content) {
     marker.addListener('click', function(evt) {
+        // Set animation
+        if (marker.getAnimation() !== null) {
+            marker.setAnimation(null);
+            marker.setIcon(null);
+        } else {
+            marker.setAnimation(google.maps.Animation.BOUNCE);
+            marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png');
+        }
+
         // Set content given
         infowindow.setContent(content);
 
