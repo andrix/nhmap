@@ -13,7 +13,8 @@
 <body>
     <div class="container-fluid">
         <div class="row">
-            <aside class="col-xs-6 col-md-2" id="left-menu">
+            <aside class="col-xs-6 col-md-2" id="left-menu"
+                data-bind="visible: visibleMenu">
                 <h2>nhmap</h2>
                 <label>Filter by</label>
                 <input type="text" id="locname" data-bind="textInput: locName" name="filter">
@@ -25,10 +26,11 @@
                 </ul>
             </aside>
 
-            <div class="col-xs-12 col-sm-6 col-md-10" id="right-container">
+            <div class="col-xs-12 col-sm-6 col-md-10" id="right-container"
+                data-bind="css: {expand: menuHidden()}">
                 <div class="row">
                     <header class="col-md-12"  id="map-header">
-                        <button id="btn-hamb" type="button" class="btn btn-default btn-lg">
+                        <button type="button" class="btn btn-default btn-lg" data-bind="click: toggleMenu">
                             <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true">
                             </span>
                         </button>

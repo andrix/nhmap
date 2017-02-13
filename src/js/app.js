@@ -83,6 +83,7 @@ var LocationViewModel = {
     places: [],
     locName: ko.observable(''),
     filtered: ko.observableArray(),
+    visibleMenu: ko.observable(true),
 
     addPlace: function (nplace) {
         this.places.push(nplace);
@@ -132,15 +133,26 @@ var LocationViewModel = {
 
     showInfo: function(data) {
         google.maps.event.trigger(data.marker, 'click');
+    },
+
+    toggleMenu: function() {
+        this.visibleMenu(!this.visibleMenu());
+        google.maps.event.trigger(gmap.map, 'resize');
+    },
+
+    menuHidden: function() {
+        return !this.visibleMenu();
     }
 };
 
 LocationViewModel.locName.subscribe(function(value) {
     LocationViewModel.searchTerm(value);
 });
-
 ko.applyBindings(LocationViewModel);
 
+/*
+    Other functions
+*/
 function bindInfoWindow(marker, map, infowindow, content) {
     marker.addListener('click', function(evt) {
         // Set content given
@@ -188,17 +200,8 @@ function createMarkers(map, places, pag, infowindow) {
     var bounds = new google.maps.LatLngBounds();
 
     for (var i = 0, place; place = places[i]; i++) {
-        var image = {
-            url: place.icon,
-            size: new google.maps.Size(71, 71),
-            origin: new google.maps.Point(0, 0),
-            anchor: new google.maps.Point(17, 34),
-            scaledSize: new google.maps.Size(25, 25)
-        };
-
         var marker = new google.maps.Marker({
             map: map,
-            // icon: image,
             animation: google.maps.Animation.DROP,
             title: place.name,
             position: place.geometry.location
@@ -233,6 +236,10 @@ function initMaps() {
             createMarkers(gmap.map, results, pag, infowindow);
             pag.nextPage();
             LocationViewModel.sort();
+        } else {
+            alert('Not possible to display the restaurants at this moment' +
+                '(Google service is not available or an error ocurred)');
+            console.log("error on nearbySearch: " + status);
         }
     });
 }
@@ -240,10 +247,3 @@ function initMaps() {
 function initMapsError() {
     alert('Error loading Google Maps.');
 }
-
-$('#btn-hamb').click(function(){
-    $('#left-menu').toggleClass('hide-menu');
-    $('#right-container').toggleClass('expand');
-    google.maps.event.trigger(gmap.map, 'resize');
-});
-
