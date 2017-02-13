@@ -48,27 +48,27 @@ NPlace.prototype.show = function() {
 */
 
 function WikipediaAPI() {
-    this.baseUrl = "http://en.wikipedia.org/w/api.php?callback=?";
+    this.baseUrl = 'http://en.wikipedia.org/w/api.php?callback=?';
     this.params = {
-      "action": "query",
-      "format": "json",
-      "prop": "pageimages",
-      "list": "geosearch",
-      "generator": "geosearch",
-      "piprop": "thumbnail|name",
-      "pithumbsize": "144",
-      "pilimit": "2",
-      "gscoord": "40.77|-73.96",
-      "gsradius": "10000",
-      "gslimit": "10",
-      "ggscoord": "40.77|-73.96"
+      'action': 'query',
+      'format': 'json',
+      'prop': 'pageimages',
+      'list': 'geosearch',
+      'generator': 'geosearch',
+      'piprop': 'thumbnail|name',
+      'pithumbsize': '144',
+      'pilimit': '2',
+      'gscoord': '40.77|-73.96',
+      'gsradius': '10000',
+      'gslimit': '10',
+      'ggscoord': '40.77|-73.96'
     };
 }
 
 WikipediaAPI.prototype.queryByCoord = function(lat, long) {
     data = this.params;
-    data.gscoord = lat + "|" + long;
-    data.ggscoord = lat + "|" + long;
+    data.gscoord = lat + '|' + long;
+    data.ggscoord = lat + '|' + long;
 
     return $.getJSON(this.baseUrl, data);
 };
@@ -81,7 +81,7 @@ WikipediaAPI.prototype.queryByCoord = function(lat, long) {
 */
 var LocationViewModel = {
     places: [],
-    locName: ko.observable(""),
+    locName: ko.observable(''),
     filtered: ko.observableArray(),
 
     addPlace: function (nplace) {
@@ -100,7 +100,7 @@ var LocationViewModel = {
         });
 
         _hide.map(function (value) {
-            value.marker.setMap(null);
+            value.marker.setVisible(false);
             value.hide();
             self.filtered.remove(value);
         });
@@ -111,7 +111,7 @@ var LocationViewModel = {
                 if (!value.isVisible()) {
                     value.show();
                     self.filtered.push(value);
-                    value.marker.setMap(gmap.map);
+                    value.marker.setVisible(true);
                 }
             }
         });
@@ -153,33 +153,38 @@ function bindInfoWindow(marker, map, infowindow, content) {
         deferred.done(function (iw) {
             return function(data) {
                 curcon = iw.getContent();
-                curcon += "<br><br><strong>Interesting places around:</strong>";
-                curcon = curcon + "<br>\n";
-                curcon += "<table>\n";
-                for (var i = 0; i < data.query.geosearch.length; i++) {
-                    o = data.query.geosearch[i];
-                    page = data.query.pages[o.pageid];
-                    curcon += "<tr>\n";
-                    curcon += "<td>" + page.title + "</td>";
-                    if (page.thumbnail !== null) {
-                        imgsrc = page.thumbnail.source;
-                        curcon += "<td><img src=\"" + imgsrc + "\"></td>";
+                curcon += '<br><br><strong>Interesting places around:</strong>';
+                if (data) {
+                    curcon = curcon + '<br>\n';
+                    curcon += '<table>\n';
+                    for (var i = 0; i < data.query.geosearch.length; i++) {
+                        o = data.query.geosearch[i];
+                        page = data.query.pages[o.pageid];
+                        curcon += '<tr>\n';
+                        curcon += '<td>' + page.title + '</td>';
+                        if (page.thumbnail) {
+                            imgsrc = page.thumbnail.source;
+                            curcon += '<td><img src=\'' + imgsrc + '\'></td>';
+                        }
+                        curcon += '</tr>\n';
                     }
-                    curcon += "</tr>\n";
+                    curcon += '</table>\n';
+                } else {
+                    curcon += '<p>There\'s no data available' +
+                        ' for this location</p>';
                 }
-                curcon += "</table>\n";
-                curcon += "<p class=\"iw-footnote\">Source: Wikipedia</p>";
+                curcon += '<p class=\'iw-footnote\'>Source: Wikipedia</p>';
                 iw.setContent(curcon);
             };
         }(infowindow));
         deferred.fail(function(err) {
-            alert("Error retriving the Wikipedia Data. Details: " + err);
+            alert('Error retriving the Wikipedia Data. Details: ' + err);
         });
         infowindow.open(map, this);
     });
 }
 
-function createMarkers(map, places, pag) {
+function createMarkers(map, places, pag, infowindow) {
     var bounds = new google.maps.LatLngBounds();
 
     for (var i = 0, place; place = places[i]; i++) {
@@ -194,13 +199,13 @@ function createMarkers(map, places, pag) {
         var marker = new google.maps.Marker({
             map: map,
             // icon: image,
+            animation: google.maps.Animation.DROP,
             title: place.name,
             position: place.geometry.location
         });
 
-        var pname = "<strong>" + place.name + "</strong>",
-            paddr = "<BR>" + place.vicinity;
-        var infowindow = new google.maps.InfoWindow();
+        var pname = '<strong>' + place.name + '</strong>',
+            paddr = '<BR>' + place.vicinity;
         bindInfoWindow(marker, map, infowindow, pname + paddr);
 
         LocationViewModel.addPlace(new NPlace(place, marker));
@@ -220,9 +225,12 @@ function initMaps() {
         radius: '2000',
         types: ['restaurant']
     };
+
+    var infowindow = new google.maps.InfoWindow();
+
     gmap.service.nearbySearch(request, function(results, status, pag) {
         if (status == google.maps.places.PlacesServiceStatus.OK) {
-            createMarkers(gmap.map, results, pag);
+            createMarkers(gmap.map, results, pag, infowindow);
             pag.nextPage();
             LocationViewModel.sort();
         }
@@ -230,12 +238,12 @@ function initMaps() {
 }
 
 function initMapsError() {
-    alert("Error loading Google Maps.");
+    alert('Error loading Google Maps.');
 }
 
-$("#btn-hamb").click(function(){
-    $("#left-menu").toggleClass("hide-menu");
-    $("#right-container").toggleClass("expand");
+$('#btn-hamb').click(function(){
+    $('#left-menu').toggleClass('hide-menu');
+    $('#right-container').toggleClass('expand');
     google.maps.event.trigger(gmap.map, 'resize');
 });
 
