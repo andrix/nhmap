@@ -84,6 +84,7 @@ var LocationViewModel = {
     locName: ko.observable(''),
     filtered: ko.observableArray(),
     visibleMenu: ko.observable(true),
+    activeMarker: null,
 
     addPlace: function (nplace) {
         this.places.push(nplace);
@@ -156,12 +157,20 @@ ko.applyBindings(LocationViewModel);
 function bindInfoWindow(marker, map, infowindow, content) {
     marker.addListener('click', function(evt) {
         // Set animation
-        if (marker.getAnimation() !== null) {
-            marker.setAnimation(null);
-            marker.setIcon(null);
-        } else {
-            marker.setAnimation(google.maps.Animation.BOUNCE);
-            marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png');
+        if (LocationViewModel.activeMarker != marker) {
+            if (LocationViewModel.activeMarker) {
+                m = LocationViewModel.activeMarker;
+                m.setAnimation(null);
+                m.setIcon(null);
+            }
+            if (marker.getAnimation() !== null) {
+                marker.setAnimation(null);
+                marker.setIcon(null);
+            } else {
+                marker.setAnimation(google.maps.Animation.BOUNCE);
+                marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png');
+            }
+            LocationViewModel.activeMarker = marker;
         }
 
         // Set content given
